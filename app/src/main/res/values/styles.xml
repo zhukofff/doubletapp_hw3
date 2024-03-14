@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="color">@color/white</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="cardBackgroundColor">@color/white</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">15dp</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerSizeBottomLeft">15dp</item>
+    </style>
+
+    <style name="CustomTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/royalPurple</item>
+        <item name="fontFamily">@font/gerbera</item>
+        <item name="lineHeight">24sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <style name="gerbera32" parent ="@android:style/TextAppearance">
+        <item name="fontFamily">@font/gerbera</item>
+        <item name="lineHeight">48sp</item>
+        <item name="android:textSize">32sp</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+    </style>
+
+    <style name="gerbera24" parent ="@android:style/TextAppearance" >
+        <item name="fontFamily">@font/gerbera</item>
+        <item name="lineHeight">32sp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+    </style>
+
+    <style name="gerbera18" parent ="@android:style/TextAppearance" >
+        <item name="fontFamily">@font/gerbera</item>
+        <item name="lineHeight">24sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+    </style>
+
+    <style name="gerbera14" parent ="@android:style/TextAppearance">
+        <item name="fontFamily">@font/gerbera</item>
+        <item name="lineHeight">18sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+    </style>
+
+</resources>
