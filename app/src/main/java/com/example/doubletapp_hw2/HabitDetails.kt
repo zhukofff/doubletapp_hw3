@@ -6,35 +6,25 @@ import kotlinx.android.parcel.Parcelize
 
 sealed class HabitDetails {
 
-    abstract val title : String
+    abstract val id : String
 
     @Parcelize
     data class Main (
-        override val title: String,
+        override val id: String,
+        val title: String,
         val description: String,
         val type: String,
         val priority: String,
         val count: String,
         val period: String
-    ) : HabitDetails(), Parcelable {
-        override fun describeContents(): Int {
-            return 0
-        }
-
-
-
-    }
+    ) : HabitDetails(), Parcelable
 
     @Parcelize
     data class ListHabits(
         val list: List<Main>?
     ) : HabitDetails(), Parcelable {
-        override fun describeContents(): Int {
-            return 0
-        }
 
-
-        override val title: String
+        override val id: String
             get() = "sad"
     }
 

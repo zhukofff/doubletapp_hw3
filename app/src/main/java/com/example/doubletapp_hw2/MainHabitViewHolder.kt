@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import com.example.doubletapp_hw2.databinding.HabitItemBinding
 
 class MainHabitViewHolder(
-    private val binding: HabitItemBinding
+    val binding: HabitItemBinding,
+    private val onEditClick: (HabitDetails.Main) -> Unit
 ) : HabitItemViewHolder(binding.root) {
 
     fun bind(item: HabitDetails.Main) {
@@ -19,13 +20,16 @@ class MainHabitViewHolder(
         else
             binding.habitType.setImageResource(R.drawable::class.java.getId("circle_red_24"))
 
+        binding.habitEdit.setOnClickListener {
+            onEditClick(item)
+        }
     }
 
     companion object {
-        fun from(parent: ViewGroup): MainHabitViewHolder {
+        fun from(parent: ViewGroup, onEditClick: (HabitDetails.Main) -> Unit): MainHabitViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = HabitItemBinding.inflate(layoutInflater, parent, false)
-            return MainHabitViewHolder(binding)
+            return MainHabitViewHolder(binding, onEditClick)
         }
     }
 }

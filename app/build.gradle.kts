@@ -49,14 +49,13 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
+    implementation(libs.androidx.navigation.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
     // reflection-based flavor
-/*
     implementation("com.github.kirich1409:viewbindingpropertydelegate-full:1.5.9")
-*/
 
     implementation("com.google.android.material:material:1.4.0")
 
