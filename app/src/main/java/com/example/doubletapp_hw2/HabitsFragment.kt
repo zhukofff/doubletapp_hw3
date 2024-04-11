@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.doubletapp_hw2.AddHabitDialogFragment.Companion.ARGS_ACTION
 import com.example.doubletapp_hw2.databinding.FragmentListHabitBinding
 
@@ -19,6 +21,7 @@ class HabitsFragment : Fragment() {
         HabitAdapter(::onEditClick)
     }
 
+    private lateinit var viewModel: HabitViewModel
     val type by lazy { arguments?.getString(ARGS_TYPE) ?: "default"}
 
     companion object {
@@ -35,12 +38,15 @@ class HabitsFragment : Fragment() {
         }
     }
 
-    var habitList : MutableList<HabitDetails.Main>? = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.v("habit", "On create call")
-
+        Log.v("habit", "On create call, init VM")
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T: ViewModel> create(modelClass: Class<T>) : T {
+                return HabitViewModel() as T
+            }
+        }).get(HabitViewModel::class.java)
 
     }
     override fun onCreateView(
@@ -56,18 +62,15 @@ class HabitsFragment : Fragment() {
             val id = bundle.getString(REQUEST_KEYS.DELETE.name)
             if (id != null) {
                 Log.v(REQUEST_KEYS.Habit.name, "DELETE FROM LIST WHERE $id")
-                habitList?.removeIf { it.id == id }
-                habitAdapter.submitList(habitList as MutableList<HabitDetails>)
+                viewModel.deleteHabit(id)
             }
             Log.v(REQUEST_KEYS.Habit.name, "onCreateView $result $bundle $type $action")
             if (result != null && result.type.lowercase() == type.lowercase()) {
                 if (action == ACTIONS.EDIT.name) {
-                   habitAdapter.submitList(habitList?.map { if (it.id == result.id) result else it } as MutableList<HabitDetails>)
+                    viewModel.editHabit(result)
                 } else {
-                    result.id = habitList?.size.toString()
-                    habitList?.add(result)
-                    Log.v(REQUEST_KEYS.Habit.name, "$habitList")
-                    habitAdapter.submitList(habitList as MutableList<HabitDetails>)
+                    viewModel.addHabit(result)
+                    Log.v(REQUEST_KEYS.Habit.name, "Add habit inside vm call")
                 }
             }
         }
@@ -77,23 +80,26 @@ class HabitsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState != null) {
+        /*if (savedInstanceState != null) {
             habitList =
                 savedInstanceState.getParcelable<HabitDetails.ListHabits>(REQUEST_KEYS.Habit.toString())?.list?.toMutableList()
             Log.v(REQUEST_KEYS.Habit.name, "Get type $type")
             habitList?.map {
                 it.type.lowercase() == type.lowercase()
             }
-        }
-        Log.v(REQUEST_KEYS.Habit.name, "onViewCreated $habitList")
-
-        habitAdapter.submitList(habitList as MutableList<HabitDetails>)
+        }*/
+        viewModel.habits.observe(viewLifecycleOwner, ::handleUI)
+        Log.v(REQUEST_KEYS.Habit.name, "onViewCreated")
         binding.listHabits.adapter = habitAdapter
 
     }
 
+    private fun handleUI(habits: MutableList<HabitDetails.Main>) {
+        Log.v(REQUEST_KEYS.Habit.name, "Get habits = $habits")
+        habitAdapter.submitList(habits as MutableList<HabitDetails>)
+    }
     private fun onEditClick(item: HabitDetails.Main) {
-        val s = AddHabitDialogFragment.newInstance(ACTIONS.EDIT.name, habitList?.size.toString() ?: "0", type,  item)
+        val s = AddHabitDialogFragment.newInstance(ACTIONS.EDIT.name, type,  item)
         s.show(parentFragmentManager, ACTIONS.EDIT.name)
 
     }
@@ -101,7 +107,7 @@ class HabitsFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         Log.v(REQUEST_KEYS.Habit.name, "on save instance state in fragment call")
         outState.run {
-            putParcelable(REQUEST_KEYS.Habit.toString(), HabitDetails.ListHabits(list = habitList))
+            putParcelable(REQUEST_KEYS.Habit.toString(), HabitDetails.ListHabits(list = viewModel.habits.value))
         }
         outState.run {
             putString(ARGS_TYPE, type)
@@ -109,8 +115,5 @@ class HabitsFragment : Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun makeFragmentName(viewId: Int, id: Long): String {
-        return "android:switcher:$viewId:$id"
-    }
 
 }

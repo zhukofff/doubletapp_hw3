@@ -16,17 +16,19 @@ class AddHabitDialogFragment : DialogFragment() {
 
     val type by lazy { arguments?.getString(ARGS_TYPE) ?: "default"}
 
+    private lateinit var viewModel: CreateEditHabitViewModel
+
     companion object {
         const val ARGS_ACTION = "args_action"
         private const val ARGS_HABIT = "args_habit"
         private const val ARGS_NUM = "args_num"
         private const val ARGS_TYPE = "args_type"
 
-        fun newInstance(action: String, num: String, type: String, item: HabitDetails.Main? = null) : AddHabitDialogFragment {
+        fun newInstance(action: String, type: String, item: HabitDetails.Main? = null) : AddHabitDialogFragment {
             val fragment = AddHabitDialogFragment()
             val bundle = Bundle()
             bundle.putString(ARGS_ACTION, action)
-            bundle.putString(ARGS_NUM, num)
+            //bundle.putString(ARGS_NUM, num)
             bundle.putString(ARGS_TYPE, type)
             if (item != null)
                 bundle.putParcelable(ARGS_HABIT, item)
@@ -81,7 +83,7 @@ class AddHabitDialogFragment : DialogFragment() {
 
                 val habit = Bundle()
                 habit.putParcelable(getTypeText(), HabitDetails.Main(
-                    if (action == ACTIONS.EDIT.name) item.id else num.toString() ,
+                    if (action == ACTIONS.EDIT.name) item.id else "0" ,
                     binding.habitNameEdit.text.toString(),
                     binding.habitDescriptionEdit.text.toString(),
                     getTypeText(),

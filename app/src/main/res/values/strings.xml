@@ -14,6 +14,8 @@
         <item>Low</item>
 
     </string-array>
+    <string name="BottomSheetBehaviorGoogleMapsLike">com.mahc.custombottomsheetbehavior.BottomSheetBehaviorGoogleMapsLike</string>
     <string name="Good_habits">Good habits"</string>
     <string name="Bad_habits">Bad habits</string>
+    <string name="find_or_sort_habit">Find or sort habit</string>
 </resources>
