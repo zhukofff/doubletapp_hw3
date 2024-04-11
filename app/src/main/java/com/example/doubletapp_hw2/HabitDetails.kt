@@ -10,7 +10,7 @@ sealed class HabitDetails {
 
     @Parcelize
     data class Main (
-        override val id: String,
+        override var id: String,
         val title: String,
         val description: String,
         val type: String,

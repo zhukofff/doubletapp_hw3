@@ -2,6 +2,7 @@ package com.example.doubletapp_hw2
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat.getDrawable
 import com.example.doubletapp_hw2.databinding.HabitItemBinding
 
 class MainHabitViewHolder(
@@ -9,19 +10,32 @@ class MainHabitViewHolder(
     private val onEditClick: (HabitDetails.Main) -> Unit
 ) : HabitItemViewHolder(binding.root) {
 
+    var type = ""
     fun bind(item: HabitDetails.Main) {
         binding.habitTitle.text = item.title
         binding.habitCounter.text = item.count
         binding.habitDescription.text = item.description
         binding.habitPeriod.text = item.period
         binding.habitPriority.text = item.priority
-        if (item.type == "Good")
-            binding.habitType.setImageResource(R.drawable::class.java.getId("circle_green_24"))
-        else
-            binding.habitType.setImageResource(R.drawable::class.java.getId("circle_red_24"))
+        if (item.type.lowercase() == Type.GOOD.name.lowercase()) {
+            type = Type.GOOD.name
+            binding.habitType.setImageResource(R.drawable.circle_green_24)
+        }
+        else {
+            type = Type.BAD.name
+            binding.habitType.setImageResource(R.drawable.circle_red_24)
+        }
 
         binding.habitEdit.setOnClickListener {
-            onEditClick(item)
+            onEditClick(HabitDetails.Main(
+                item.id,
+                binding.habitTitle.text.toString(),
+                binding.habitDescription.text.toString(),
+                type,
+                binding.habitPriority.text.toString(),
+                binding.habitCounter.text.toString(),
+                binding.habitPeriod.text.toString()
+            ))
         }
     }
 

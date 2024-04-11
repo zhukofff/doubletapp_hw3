@@ -14,16 +14,20 @@ import com.example.doubletapp_hw2.databinding.DialogAddHabitBinding
 
 class AddHabitDialogFragment : DialogFragment() {
 
+    val type by lazy { arguments?.getString(ARGS_TYPE) ?: "default"}
+
     companion object {
         const val ARGS_ACTION = "args_action"
         private const val ARGS_HABIT = "args_habit"
         private const val ARGS_NUM = "args_num"
+        private const val ARGS_TYPE = "args_type"
 
-        fun newInstance(action: String, num: String, item: HabitDetails.Main? = null) : AddHabitDialogFragment {
+        fun newInstance(action: String, num: String, type: String, item: HabitDetails.Main? = null) : AddHabitDialogFragment {
             val fragment = AddHabitDialogFragment()
             val bundle = Bundle()
             bundle.putString(ARGS_ACTION, action)
             bundle.putString(ARGS_NUM, num)
+            bundle.putString(ARGS_TYPE, type)
             if (item != null)
                 bundle.putParcelable(ARGS_HABIT, item)
             fragment.arguments = bundle
@@ -59,25 +63,24 @@ class AddHabitDialogFragment : DialogFragment() {
             // Apply the adapter to the spinner.
             binding.prioritySpinner.adapter = adapter
         }
-
+        
         binding.addHabit.setOnClickListener {
             if (binding.habitNameEdit.text!!.isBlank()) {
-                showSystemMessage("You need to type the name of habit")
+                showSystemMessage(getString(R.string.you_need_to_type_the_name_of_habit))
             }
             else if (binding.habitDescriptionEdit.text!!.isBlank()) {
-                showSystemMessage("Please, write description for habit")
+                showSystemMessage(getString(R.string.please_write_description_for_habit))
             }
             else if (binding.habitPeriodEdit.text!!.isBlank()) {
-                showSystemMessage("Please, write period for habit")
+                showSystemMessage(getString(R.string.please_write_period_for_habit))
             }
             else if (binding.habitCountEdit.text!!.isBlank()) {
-                showSystemMessage("Please, write count for habit")
+                showSystemMessage(getString(R.string.please_write_count_for_habit))
             }
             else {
-                val mainFragment = HabitsFragment()
-                val habit = Bundle()
 
-                habit.putParcelable("Habit", HabitDetails.Main(
+                val habit = Bundle()
+                habit.putParcelable(getTypeText(), HabitDetails.Main(
                     if (action == ACTIONS.EDIT.name) item.id else num.toString() ,
                     binding.habitNameEdit.text.toString(),
                     binding.habitDescriptionEdit.text.toString(),
@@ -86,13 +89,26 @@ class AddHabitDialogFragment : DialogFragment() {
                     binding.habitCountEdit.text.toString(),
                     binding.habitPeriodEdit.text.toString()
                 ))
-                habit.putString(ARGS_ACTION, action)
-                Log.v("List of habits", "$habit")
-                mainFragment.arguments = habit
-                setFragmentResult(
-                    "Habit",
-                    habit
-                )
+
+                if (action == ACTIONS.EDIT.name && getTypeText() != item.type)
+                    habit.putString(ARGS_ACTION, ACTIONS.ADD.name)
+                else {
+                    habit.putString(ARGS_ACTION, action)
+                }
+                Log.v("List of habits", "Type = ${getTypeText()}, $habit")
+                requireActivity().supportFragmentManager.setFragmentResult(
+                    getTypeText(),
+                    habit)
+                if (action == ACTIONS.EDIT.name) {
+                    if (item.type != getTypeText()) {
+                        val habit2 = Bundle()
+                        habit2.putString(REQUEST_KEYS.DELETE.name, item.id)
+                        requireActivity().supportFragmentManager.setFragmentResult(
+                            item.type,
+                            habit2
+                        )
+                    }
+                }
                 dialog?.dismiss()
 
             }
@@ -117,7 +133,7 @@ class AddHabitDialogFragment : DialogFragment() {
         binding.habitDescriptionEdit.text = Editable.Factory.getInstance().newEditable(item.description)
         binding.habitNameEdit.text = Editable.Factory.getInstance().newEditable(item.title)
         binding.habitPeriodEdit.text = Editable.Factory.getInstance().newEditable(item.period)
-        if (item.type == "Good")
+        if (item.type.lowercase() == Type.GOOD.name.lowercase())
             binding.typeGood.isChecked = true
         else
             binding.typeBad.isChecked = true
@@ -129,9 +145,10 @@ class AddHabitDialogFragment : DialogFragment() {
     }
 
     private fun getTypeText() : String {
-        return if (binding.typeGood.isChecked)
-            binding.typeGood.text.toString()
-        else binding.typeBad.text.toString()
+        return if (binding.typeGood.isChecked) {
+            Type.GOOD.name
+        }
+        else { Type.BAD.name }
     }
 }
 

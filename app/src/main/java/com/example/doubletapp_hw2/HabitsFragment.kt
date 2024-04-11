@@ -13,16 +13,13 @@ import com.example.doubletapp_hw2.databinding.FragmentListHabitBinding
 class HabitsFragment : Fragment() {
 
 
-    /*
-        [TODO] ADD CONSTRAINT BOTTOM TO BUTTON ADD HABIT
-     */
     private lateinit var binding : FragmentListHabitBinding
 
     private val habitAdapter by lazy(LazyThreadSafetyMode.NONE) {
         HabitAdapter(::onEditClick)
     }
 
-    private val type by lazy { arguments?.getString(ARGS_TYPE) ?: "default"}
+    val type by lazy { arguments?.getString(ARGS_TYPE) ?: "default"}
 
     companion object {
         private const val ARGS_TYPE = "args_type"
@@ -38,7 +35,7 @@ class HabitsFragment : Fragment() {
         }
     }
 
-    private var habitList : MutableList<HabitDetails.Main>? = mutableListOf()
+    var habitList : MutableList<HabitDetails.Main>? = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,17 +48,25 @@ class HabitsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setFragmentResultListener(REQUEST_KEYS.Habit.toString()) { requestKey, bundle ->
+        requireActivity().supportFragmentManager.setFragmentResultListener(type, this) { requestKey, bundle ->
             // We use a String here, but any type that can be put in a Bundle is supported.
-            val result = bundle.getParcelable<HabitDetails.Main>(REQUEST_KEYS.Habit.toString())
+            val result = bundle.getParcelable<HabitDetails.Main>(type)
             // Do something with the result.
             val action = bundle.getString(ARGS_ACTION)
-            Log.v("habit", "onCreateView $result $bundle $type")
+            val id = bundle.getString(REQUEST_KEYS.DELETE.name)
+            if (id != null) {
+                Log.v(REQUEST_KEYS.Habit.name, "DELETE FROM LIST WHERE $id")
+                habitList?.removeIf { it.id == id }
+                habitAdapter.submitList(habitList as MutableList<HabitDetails>)
+            }
+            Log.v(REQUEST_KEYS.Habit.name, "onCreateView $result $bundle $type $action")
             if (result != null && result.type.lowercase() == type.lowercase()) {
                 if (action == ACTIONS.EDIT.name) {
                    habitAdapter.submitList(habitList?.map { if (it.id == result.id) result else it } as MutableList<HabitDetails>)
                 } else {
+                    result.id = habitList?.size.toString()
                     habitList?.add(result)
+                    Log.v(REQUEST_KEYS.Habit.name, "$habitList")
                     habitAdapter.submitList(habitList as MutableList<HabitDetails>)
                 }
             }
@@ -75,31 +80,26 @@ class HabitsFragment : Fragment() {
         if (savedInstanceState != null) {
             habitList =
                 savedInstanceState.getParcelable<HabitDetails.ListHabits>(REQUEST_KEYS.Habit.toString())?.list?.toMutableList()
-            Log.v("habit", "Get type $type")
+            Log.v(REQUEST_KEYS.Habit.name, "Get type $type")
             habitList?.map {
                 it.type.lowercase() == type.lowercase()
             }
         }
-        Log.v("habit", "onViewCreated $habitList")
+        Log.v(REQUEST_KEYS.Habit.name, "onViewCreated $habitList")
 
         habitAdapter.submitList(habitList as MutableList<HabitDetails>)
         binding.listHabits.adapter = habitAdapter
 
-        binding.addHabit.setOnClickListener {
-            val s = AddHabitDialogFragment.newInstance(ACTIONS.ADD.name, habitList?.size.toString())
-            s.show(parentFragmentManager, ACTIONS.ADD.name)
-        }
-
     }
 
     private fun onEditClick(item: HabitDetails.Main) {
-        val s = AddHabitDialogFragment.newInstance(ACTIONS.EDIT.name, habitList?.size.toString() ?: "0", item)
+        val s = AddHabitDialogFragment.newInstance(ACTIONS.EDIT.name, habitList?.size.toString() ?: "0", type,  item)
         s.show(parentFragmentManager, ACTIONS.EDIT.name)
 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.v("habit", "on save instance state in fragment call")
+        Log.v(REQUEST_KEYS.Habit.name, "on save instance state in fragment call")
         outState.run {
             putParcelable(REQUEST_KEYS.Habit.toString(), HabitDetails.ListHabits(list = habitList))
         }

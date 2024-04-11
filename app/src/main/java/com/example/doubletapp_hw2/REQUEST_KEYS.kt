@@ -1,7 +1,10 @@
 package com.example.doubletapp_hw2
 
 enum class REQUEST_KEYS {
-    Habit
+    Habit,
+    HABIT_BAD,
+    HABIT_GOOD,
+    DELETE
 }
 
 enum class ACTIONS {

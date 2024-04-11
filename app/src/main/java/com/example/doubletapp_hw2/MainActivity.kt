@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar.toolbar)
-        supportActionBar?.title = "Habit"
+        supportActionBar?.title = getString(R.string.app_name)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         drawerToggle.isDrawerIndicatorEnabled = true
 
         if (savedInstanceState != null) {
-            Log.v("habit", "fragments = ${supportFragmentManager.fragments}")
+            Log.v(REQUEST_KEYS.Habit.name, "fragments = ${supportFragmentManager.fragments}")
             /*habitsFragment =
                 supportFragmentManager.getFragment(savedInstanceState, FragmentTags.MainHabits.name)!!*/
         }
@@ -66,15 +66,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.v("habit", "On save instance state in activity ${supportFragmentManager.fragments}")
+        Log.v(REQUEST_KEYS.Habit.name, "On save instance state in activity ${supportFragmentManager.fragments}")
         for (fr in supportFragmentManager.fragments) {
-
             supportFragmentManager.putFragment(outState, fr.tag.toString(), fr)
         }
 
         //getSupportFragmentManager().putFragment(outState, "myFragmentName", habitsFragment);
 
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.side_navigation, menu)
         return super.onCreateOptionsMenu(menu)

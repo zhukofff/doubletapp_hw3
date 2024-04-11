@@ -6,20 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/add_habit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="Добавить привычку"
-        app:icon="@drawable/ic_plus_24"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_habits"
         android:layout_width="wrap_content"

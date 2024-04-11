@@ -83,7 +83,7 @@ class HabitAdapter(
                 holder.binding.habitDescription.text = newData.description
                 holder.binding.habitPeriod.text = newData.period
                 holder.binding.habitPriority.text = newData.priority
-                if (newData.type == "Good")
+                if (newData.type == Type.GOOD.name)
                     holder.binding.habitType.setImageResource(R.drawable.circle_green_24)
                 else
                     holder.binding.habitType.setImageResource(R.drawable.circle_red_24)

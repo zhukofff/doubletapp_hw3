@@ -4,11 +4,16 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="home">Home</string>
     <string name="additional_information">Additional information</string>
+    <string name="you_need_to_type_the_name_of_habit">You need to type the name of habit</string>
+    <string name="please_write_description_for_habit">Please, write description for habit</string>
+    <string name="please_write_period_for_habit">Please, write period for habit</string>
+    <string name="please_write_count_for_habit">Please, write count for habit</string>
     <string-array name="priority_array">
         <item>High</item>
         <item>Normal</item>
         <item>Low</item>
 
     </string-array>
-
+    <string name="Good_habits">Good habits"</string>
+    <string name="Bad_habits">Bad habits</string>
 </resources>
